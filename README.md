@@ -2,27 +2,173 @@
 
 
 
+***An end-to-end SAP ABAP project for managing employee requests for IT equipment such as laptops, monitors, keyboards, mice, headsets and other materials.***
+
+
+
+***The project covers request creation, business validation, duplicate request prevention, request status tracking, status history, CDS-based data modelling, OData V4 service exposure and Fiori Elements-based request monitoring.***
+
+
+
+
+
 #### ***About the Project***
 
 
 
-***Employee Service Request Management is an SAP ABAP project that I developed to manage employee requests for IT-related materials such as laptops, monitors, keyboards, headsets, and other equipment.***
+***In an organization, employees may need to request IT equipment or replacement materials. If these requests are handled manually, it can become difficult to track their status, identify duplicate requests and monitor the overall request lifecycle.***
 
 
 
-***The main idea behind this project is to provide one place where employee requests can be created, tracked, and monitored instead of handling every request manually.***
+***I developed this project to model that process inside SAP using ABAP.***
 
 
 
-***I also wanted the project to cover both the backend ABAP development and the user-facing side using CDS, OData V4, and Fiori Elements.***
+***The application stores employee request information in custom SAP database tables and processes the request through different stages.***
 
 
 
-#### ***What the Application Does***
+***The request lifecycle is:***
 
 
 
-***An employee request contains information such as:***
+***Submitted → Validated → Processing → Fulfilled***
+
+
+
+***The application also maintains a separate status history so that previous status changes can be viewed later.***
+
+
+
+
+
+#### ***Project Highlights***
+
+
+
+* ***Employee IT equipment request management***
+* ***Request creation using ABAP***
+* ***Automatic Request ID generation***
+* ***Employee and material validation***
+* ***Duplicate active-request prevention***
+* ***Request priority handling***
+* ***Required-date validation***
+* ***Request status management***
+* ***Complete status history***
+* ***Reusable ABAP business logic***
+* ***ABAP monitoring reports***
+* ***CDS Views***
+* ***OData V4 service exposure***
+* ***Fiori Elements request overview***
+* ***Fiori Elements status history***
+* ***Test programs for different scenarios***
+* ***Git and GitHub version control***
+
+
+
+#### ***Request Workflow***
+
+
+
+***The overall application flow is:***
+
+
+
+&#x20;               ***Employee Request***
+
+&#x20;                      ***|***
+
+&#x20;                      ***v***
+
+&#x20;               ***Input Validation***
+
+&#x20;                      ***|***
+
+&#x20;                      ***v***
+
+&#x20;                ***Duplicate Check***
+
+&#x20;                      ***|***
+
+&#x20;             ***+--------+--------+***
+
+&#x20;             ***|                 |***
+
+&#x20;         ***Duplicate          No Duplicate***
+
+&#x20;             ***|                 |***
+
+&#x20;             ***v                 v***
+
+&#x20;       ***Request Blocked    Request Created***
+
+&#x20;                               ***|***
+
+&#x20;                               ***v***
+
+&#x20;                          ***Submitted***
+
+&#x20;                               ***|***
+
+&#x20;                               ***v***
+
+&#x20;                          ***Validated***
+
+&#x20;                               ***|***
+
+&#x20;                               ***v***
+
+&#x20;                          ***Processing***
+
+&#x20;                               ***|***
+
+&#x20;                               ***v***
+
+&#x20;                          ***Fulfilled***
+
+
+
+***The request status history is maintained separately so that the complete lifecycle can be monitored.***
+
+
+
+***Example:***
+
+
+
+***Request 100004***
+
+
+
+***Submitted***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Validated***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Processing***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Fulfilled***
+
+
+
+
+
+#### ***Request Creation***
+
+
+
+***A request can be created with the following information:***
 
 
 
@@ -32,7 +178,7 @@
 
 ***Priority***
 
-***Material***
+***Material ID***
 
 ***Quantity***
 
@@ -42,57 +188,51 @@
 
 
 
-***When a request is created, the system assigns a unique Request ID and stores the request details.***
+***The system generates a unique Request ID and stores the request information in the relevant SAP tables.***
 
 
 
-***The request then goes through different statuses such as:***
+
+
+###### ***Example Request***
 
 
 
-***Submitted → Validated → Processing → Fulfilled***
+***Request ID      : 100005***
+
+***Employee ID     : E9999***
+
+***Request Type    : N***
+
+***Priority        : N***
+
+***Material ID     : HEADSET-001***
+
+***Quantity        : 1***
+
+***Reason          : NEW HEADSET REQUIRED***
+
+***Request Date    : 15.08.2026***
+
+***Required Date   : 20.08.2026***
+
+***Status          : Submitted***
+
+***Status Sequence : 0010***
+
+***Changed By      : NAX\_1501231***
 
 
 
-***The system also keeps the complete status history so that the progress of a request can be checked later.***
+***After successful creation, the request becomes available for monitoring through the Fiori Elements interface.***
 
 
 
-### ***Main Features***
+#### ***Duplicate Request Prevention***
 
 
 
-##### ***Request Creation***
-
-
-
-***A request can be created with the required employee, material, quantity, priority, reason, and required date.***
-
-
-
-***For example:***
-
-
-
-***Request ID    : 100005***
-
-***Employee ID   : E9999***
-
-***Material      : HEADSET-001***
-
-***Quantity      : 1***
-
-***Priority      : N***
-
-***Status        : Submitted***
-
-
-
-##### ***Duplicate Request Validation***
-
-
-
-***One of the important validations I implemented is duplicate request checking.***
+***One of the main business validations implemented in the project is duplicate request prevention.***
 
 
 
@@ -100,11 +240,45 @@
 
 
 
-***If an active request exists, the new request is blocked.***
+***The following statuses are considered active:***
 
 
 
-***Example:***
+***Submitted***
+
+***Validated***
+
+***Processing***
+
+
+
+***If an active request already exists, the new request is blocked.***
+
+
+
+###### ***Example***
+
+
+
+***Employee ID : E9999***
+
+***Material ID : HEADSET-001***
+
+
+
+***Existing Request : 100005***
+
+
+
+***Result:***
+
+***Duplicate active request detected***
+
+***Request creation blocked***
+
+
+
+***The ABAP program displays:***
 
 
 
@@ -112,23 +286,1099 @@
 
 
 
-***This was implemented because an employee should not be able to create multiple active requests for the same material unnecessarily.***
+***This prevents an employee from unnecessarily creating multiple active requests for the same material.***
 
 
 
-##### ***Request Status Tracking***
+
+
+#### ***Request Status Tracking***
 
 
 
-***The request status is maintained separately in the status history table.***
+
+
+***The project maintains request status separately from the main request information.***
 
 
 
-***For example:***
+***Each status history record stores information such as:***
+
+
+
+* ***Request ID***
+* ***Status***
+* ***Status date***
+* ***Status sequence***
+* ***Changed by***
+* ***Comments***
+
+
+
+###### ***Example Status History***
+
+
+
+***Request ID : 100004***
+
+
+
+***0010  Submitted***
+
+&#x20;     ***↓***
+
+***2000  Validated***
+
+&#x20;     ***↓***
+
+***2010  Processing***
+
+&#x20;     ***↓***
+
+***2020  Fulfilled***
+
+
+
+***Example comments stored in the status history include:***
+
+
+
+***Request submitted by employee***
+
+***Request validated successfully***
+
+***Request is being processed***
+
+***Request fulfilled successfully***
+
+
+
+***This allows the request lifecycle to be audited and monitored.***
+
+
+
+
+
+#### ***SAP Database Layer***
+
+
+
+***The project uses custom database tables to separate request information into logical areas.***
+
+
+
+##### ***Database Tables***
+
+
+
+###### ***SAP Object	Purpose***
+
+***----------------------------------------------------------------------------------------***
+
+***ZESR\_HDR	     Stores request header information***
+
+***ZESR\_ITEM	     Stores request material, quantity and reason information***
+
+***ZESR\_STATUS	     Stores request status history***
+
+***ZESR\_FULLFILL	     Stores request fulfillment information***
+
+
+
+
+
+###### ***Header Table***
+
+
+
+***ZESR\_HDR***
+
+
+
+***Stores information such as:***
+
+
+
+* ***Request ID***
+* ***Employee ID***
+* ***Request type***
+* ***Priority***
+* ***Current status***
+* ***Request date***
+* ***Required date***
+
+
+
+###### ***Item Table***
+
+
+
+***ZESR\_ITEM***
+
+
+
+***Stores request item information such as:***
+
+
+
+* ***Request ID***
+* ***Material ID***
+* ***Quantity***
+* ***Reason***
+
+
+
+###### ***Status Table***
+
+
+
+***ZESR\_STATUS***
+
+
+
+***Stores:***
+
+
+
+* ***Request ID***
+* ***Status***
+* ***Status sequence***
+* ***Status date***
+* ***Changed user***
+* ***Comments***
+
+
+
+###### ***Fulfillment Table***
+
+
+
+***ZESR\_FULLFILL***
+
+
+
+***Stores fulfillment-related information for completed requests.***
+
+
+
+#### ***ABAP Dictionary Objects***
+
+
+
+***The project contains custom Data Elements and Domains.***
+
+
+
+###### ***Data Elements***
+
+
+
+* ***ZESR\_DE\_EMP***
+* ***ZESR\_DE\_PRIORITY***
+* ***ZESR\_DE\_QTY***
+* ***ZESR\_DE\_REASON***
+* ***ZESR\_DE\_REQID***
+* ***ZESR\_DE\_RTYPE***
+* ***ZESR\_DE\_STATUS***
+
+
+
+###### ***Domains***
+
+
+
+* ***ZESR\_D\_EMP***
+* ***ZESR\_D\_PRIORITY***
+* ***ZESR\_D\_QTY***
+* ***ZESR\_D\_REASON***
+* ***ZESR\_D\_REQID***
+* ***ZESR\_D\_RTYPE***
+* ***ZESR\_D\_STATUS***
+
+
+
+###### ***Structure***
+
+***ZESR\_S\_OUTPUT***
+
+
+
+***Purpose:***
+
+
+
+***ESR Report Output Structure***
+
+
+
+###### ***Table Type***
+
+***ZESR\_T\_OUTPUT***
+
+
+
+***Purpose:***
+
+
+
+***ESR Output Table Type***
+
+
+
+***These objects demonstrate the use of the ABAP Dictionary for defining reusable data structures and database-related types.***
+
+
+
+
+
+#### ***ABAP Business Logic***
+
+
+
+***The project contains a reusable ABAP class:***
+
+
+
+***ZCL\_ESR\_REQUEST***
+
+
+
+***The class contains request-related business logic.***
+
+
+
+***One important operation implemented through the class is duplicate request validation.***
+
+
+
+***The class is used to separate business logic from individual test or report programs.***
+
+
+
+***Conceptually:***
+
+
+
+***ABAP Program***
+
+&#x20;    ***|***
+
+&#x20;    ***v***
+
+***ZCL\_ESR\_REQUEST***
+
+&#x20;    ***|***
+
+&#x20;    ***v***
+
+***Business Validation***
+
+&#x20;    ***|***
+
+&#x20;    ***v***
+
+***Database Check***
+
+
+
+***This makes the validation logic reusable from different programs.***
+
+
+
+
+
+
+
+#### ***Main ABAP Programs***
+
+
+
+
+
+***The main application programs are:***
+
+
+
+###### ***Program	                Purpose***
+
+***-----------------------------------------------------------------------------***
+
+***ZESR\_CREATE\_REQUEST	Creates a new employee service request***
+
+***ZESR\_STATUS\_UPDATE	Updates request status***
+
+***ZESR\_ALV\_REQUEST	Displays request information using ALV***
+
+***ZESR\_ALV\_MONITOR	Monitors requests***
+
+***ZESR\_STATUS\_HISTORY	Displays request status history***
+
+***ZESR\_REQUEST\_DASHBOARD	Provides request management/monitoring output***
+
+
+
+***Additional programs were created for testing different parts of the application.***
+
+
+
+
+
+#### ***Test Programs***
+
+
+
+***The repository contains test programs used during development and validation.***
+
+
+
+* ***ZESR\_TEST\_CREATE***
+* ***ZESR\_TEST\_DATA***
+* ***ZESR\_TEST\_DETAILS***
+* ***ZESR\_TEST\_DUPLICATE***
+* ***ZESR\_TEST\_FULFILL***
+* ***ZESR\_TEST\_ITEM\_INSERT***
+* ***ZESR\_TEST\_PROCESS***
+* ***ZESR\_TEST\_STATUS***
+* ***ZESR\_TEST\_VALIDATE***
+
+
+
+***These programs were used to test different stages of request processing.***
+
+
+
+
+
+#### ***CDS Views***
+
+
+
+***The project uses CDS Views to provide structured data for the service layer and Fiori Elements interface.***
+
+
+
+###### ***Request Overview CDS***
+
+
+
+***ZESR\_C\_REQUEST***
+
+
+
+***Purpose:***
+
+
+
+***ESR Request Overview***
+
+
+
+***This CDS view combines request-related information for monitoring.***
+
+
+
+***It exposes information such as:***
+
+
+
+* ***Request ID***
+* ***Employee ID***
+* ***Request type***
+* ***Priority***
+* ***Status***
+* ***Material***
+* ***Quantity***
+* ***Reason***
+* ***Request date***
+* ***Required date***
+
+
+
+###### ***Status History CDS***
+
+***ZESR\_C\_STATUS***
+
+
+
+***Purpose:***
+
+
+
+***ESR Request Status History***
+
+
+
+***This CDS view provides the status history information required for monitoring.***
+
+
+
+
+
+#### ***OData V4 Service***
+
+
+
+***The project exposes the CDS-based application data through an OData V4 service.***
+
+
+
+###### ***Service Definition***
+
+
+
+***ZESR\_SD***
+
+
+
+***Purpose:***
+
+
+
+***ESR Request Management Service***
+
+
+
+###### ***Service Binding***
+
+
+
+***ZESR\_SB***
+
+
+
+***Binding type:***
+
+
+
+***OData V4 - UI***
+
+
+
+***The service binding provides the Fiori Elements interface used for request monitoring.***
+
+
+
+
+
+#### ***Fiori Elements Interface***
+
+
+
+***The project uses Fiori Elements to provide a user-facing monitoring interface.***
+
+
+
+***The Fiori Elements preview contains two main areas.***
+
+
+
+###### ***Request Overview***
+
+
+
+***The Request Overview displays:***
+
+
+
+***Request ID***
+
+***Employee ID***
+
+***Request type***
+
+***Priority***
+
+***Status***
+
+***Material ID***
+
+***Quantity***
+
+***Reason***
+
+***Request date***
+
+***Required date***
+
+
+
+***Example requests tested in the system include:***
 
 
 
 ***100004***
+
+***Employee : E9999***
+
+***Material : MONITOR-001***
+
+***Status   : Fulfilled***
+
+
+
+***and***
+
+
+
+***100005***
+
+***Employee : E9999***
+
+***Material : HEADSET-001***
+
+***Status   : Submitted***
+
+
+
+
+
+#### ***Status History***
+
+
+
+***The Status History view displays the historical changes for requests.***
+
+
+
+***Information includes:***
+
+
+
+* ***Changed by***
+* ***Comments***
+* ***Request ID***
+* ***Status***
+* ***Status date***
+* ***Status sequence***
+* ***Status text***
+
+
+
+***Example:***
+
+
+
+***100001***
+
+
+
+***Submitted***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Validated***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Processing***
+
+
+
+***Another completed request:***
+
+
+
+***100004***
+
+
+
+***Submitted***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Validated***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Processing***
+
+&#x20;   ***|***
+
+&#x20;   ***v***
+
+***Fulfilled***
+
+
+
+
+
+#### ***Application Architecture***
+
+
+
+***The project follows a layered SAP application approach.***
+
+
+
+***+--------------------------------------+***
+
+***|          Fiori Elements UI           |***
+
+***+-------------------+------------------+***
+
+&#x20;                   ***|***
+
+&#x20;                   ***v***
+
+***+--------------------------------------+***
+
+***|           OData V4 Service           |***
+
+***|              ZESR\_SB                 |***
+
+***+-------------------+------------------+***
+
+&#x20;                   ***|***
+
+&#x20;                   ***v***
+
+***+--------------------------------------+***
+
+***|          Service Definition          |***
+
+***|              ZESR\_SD                 |***
+
+***+-------------------+------------------+***
+
+&#x20;                   ***|***
+
+&#x20;                   ***v***
+
+***+--------------------------------------+***
+
+***|             CDS Views                |***
+
+***|      ZESR\_C\_REQUEST / STATUS         |***
+
+***+-------------------+------------------+***
+
+&#x20;                   ***|***
+
+&#x20;                   ***v***
+
+***+--------------------------------------+***
+
+***|          ABAP Business Logic         |***
+
+***|          ZCL\_ESR\_REQUEST             |***
+
+***+-------------------+------------------+***
+
+&#x20;                   ***|***
+
+&#x20;                   ***v***
+
+***+--------------------------------------+***
+
+***|          SAP Database Tables         |***
+
+***| ZESR\_HDR / ZESR\_ITEM / ZESR\_STATUS  |***
+
+***|            ZESR\_FULLFILL             |***
+
+***+-------------------------------------***
+
+
+
+
+
+#### ***End-to-End Application Flow***
+
+
+
+***Employee***
+
+&#x20;  ***|***
+
+&#x20;  ***v***
+
+***Request Details***
+
+&#x20;  ***|***
+
+&#x20;  ***v***
+
+***ZESR\_CREATE\_REQUEST***
+
+&#x20;  ***|***
+
+&#x20;  ***v***
+
+***Validation***
+
+&#x20;  ***|***
+
+&#x20;  ***v***
+
+***ZCL\_ESR\_REQUEST***
+
+&#x20;  ***|***
+
+&#x20;  ***v***
+
+***Duplicate Check***
+
+&#x20;  ***|***
+
+&#x20;  ***+---- Duplicate ----> Request Blocked***
+
+&#x20;  ***|***
+
+&#x20;  ***+---- Valid --------> Request Created***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                        ***ZESR\_HDR***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                        ***ZESR\_ITEM***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                       ***ZESR\_STATUS***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                        ***CDS Views***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                        ***OData V4***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                      ***Fiori Elements***
+
+&#x20;                             ***|***
+
+&#x20;                             ***v***
+
+&#x20;                      ***Request Monitor***
+
+
+
+
+
+#### ***Screenshots and Evidence***
+
+
+
+***The repository contains screenshots captured from the actual SAP development environment and Fiori Elements preview.***
+
+
+
+###### ***1. ADT Project Architecture***
+
+
+
+***Shows the SAP ADT project and the ZPKG\_ESR package containing the project objects.***
+
+
+
+***File:***
+
+
+
+***screenshots/01\_ADT\_Architecture.png.png***
+
+
+
+###### ***2. ABAP Programs***
+
+
+
+***Shows the ABAP programs created for request management and monitoring.***
+
+
+
+***File:***
+
+
+
+***screenshots/02\_ADT\_ABAP\_Programs.png.png***
+
+
+
+###### ***3. Fiori Request Overview***
+
+
+
+***Shows the Fiori Elements request monitoring interface.***
+
+
+
+***File:***
+
+
+
+***screenshots/03\_Fiori\_Request\_Overview.png***
+
+
+
+###### ***4. Fiori Status History***
+
+
+
+***Shows the request status history interface.***
+
+
+
+***File:***
+
+
+
+***screenshots/04\_Fiori\_Status\_History.png***
+
+
+
+###### ***5. Request Creation Output***
+
+
+
+***Shows the successful creation of an employee request.***
+
+
+
+***Files:***
+
+
+
+***screenshots/05\_Create\_Request\_Output1.png***
+
+***screenshots/05\_Create\_Request\_Output2.png***
+
+
+
+###### ***6. Duplicate Request Validation***
+
+
+
+***Shows the system blocking an active duplicate request.***
+
+
+
+***File:***
+
+
+
+***screenshots/06\_Duplicate\_Request\_Validation.png***
+
+
+
+
+
+#### ***Repository Structure***
+
+
+
+***Employee-Service-Request-Management/***
+
+***|***
+
+***+-- README.md***
+
+***+-- .gitignore***
+
+***|***
+
+***+-- abap/***
+
+***|   |***
+
+***|   +-- classes/***
+
+***|   |   |***
+
+***|   |   +-- ZCL\_ESR\_REQUEST.abap***
+
+***|   |***
+
+***|   +-- cds/***
+
+***|   |   |***
+
+***|   |   +-- ZESR\_C\_REQUEST.ddls***
+
+***|   |   +-- ZESR\_C\_STATUS.ddls***
+
+***|   |***
+
+***|   +-- programs/***
+
+***|   |   |***
+
+***|   |   +-- ZESR\_CREATE\_REQUEST.abap***
+
+***|   |   +-- ZESR\_STATUS\_UPDATE.abap***
+
+***|   |   +-- ZESR\_ALV\_REQUEST.abap***
+
+***|   |   +-- ZESR\_ALV\_MONITOR.abap***
+
+***|   |   +-- ZESR\_STATUS\_HISTORY.abap***
+
+***|   |   +-- ZESR\_REQUEST\_DASHBOARD.abap***
+
+***|   |***
+
+***|   +-- services/***
+
+***|       |***
+
+***|       +-- ZESR\_SD.srvd***
+
+***|       +-- TABLES.md***
+
+***|***
+
+***+-- database/***
+
+***|   |***
+
+***|   +-- TABLES.md***
+
+***|***
+
+***+-- screenshots/***
+
+***|   |***
+
+***|   +-- 01\_ADT\_Architecture.png.png***
+
+***|   +-- 02\_ADT\_ABAP\_Programs.png.png***
+
+***|   +-- 03\_Fiori\_Request\_Overview.png***
+
+***|   +-- 04\_Fiori\_Status\_History.png***
+
+***|   +-- 05\_Create\_Request\_Output1.png***
+
+***|   +-- 05\_Create\_Request\_Output2.png***
+
+***|   +-- 06\_Duplicate\_Request\_Validation.png***
+
+***|***
+
+***+-- test/***
+
+&#x20;   ***|***
+
+&#x20;   ***+-- ZESR\_TEST\_CREATE.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_DATA.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_DETAILS.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_DUPLICATE.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_FULFILL.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_ITEM\_INSERT.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_PROCESS.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_STATUS.abap***
+
+&#x20;   ***+-- ZESR\_TEST\_VALIDATE.abap***
+
+
+
+
+
+#### ***Testing Performed***
+
+
+
+***The project was tested using different request scenarios.***
+
+
+
+###### ***Successful Request Creation***
+
+
+
+***Example:***
+
+
+
+***Request ID      : 100005***
+
+***Employee ID     : E9999***
+
+***Material ID     : HEADSET-001***
+
+***Quantity        : 1***
+
+***Status          : Submitted***
+
+***Status Sequence : 0010***
+
+
+
+***The request was successfully stored in the database and appeared in the Fiori request overview.***
+
+
+
+###### ***Duplicate Request Test***
+
+
+
+***The duplicate validation was tested using an employee and material combination that already had an active request.***
+
+
+
+***Example:***
+
+
+
+***Employee ID : E9999***
+
+***Material ID : HEADSET-001***
+
+***Existing ID : 100005***
+
+
+
+***Result:***
+
+
+
+***Duplicate active request already exists: 100005***
+
+
+
+***The new request was blocked.***
+
+
+
+###### ***Status Processing Test***
+
+
+
+***A request was tested through multiple status stages:***
+
+
 
 ***Submitted***
 
@@ -146,280 +1396,9 @@
 
 
 
-***Each status change stores information such as the date, sequence number, user, and comments.***
+***The status history was then verified through the Fiori Elements status history view.***
 
 
-
-##### ***Request Monitoring***
-
-
-
-***I created ABAP reports for viewing and monitoring the requests and their status history.***
-
-
-
-***The project also exposes the request information through CDS and OData so that it can be displayed using Fiori Elements.***
-
-
-
-#### ***SAP Objects Used***
-
-
-
-##### ***Database Tables***
-
-
-
-***Object	         Purpose***
-
-***--------------------------------------------------***
-
-***ZESR\_HDR	Stores request header information***
-
-***ZESR\_ITEM	Stores material and quantity information***
-
-***ZESR\_STATUS	Stores request status history***
-
-***ZESR\_FULLFILL	Stores fulfillment information***
-
-
-
-
-
-##### ***CDS Views***
-
-
-
-***Object	         Purpose***
-
-***--------------------------------------***
-
-***ZESR\_C\_REQUEST	 Request overview***
-
-***ZESR\_C\_STATUS	 Request status history***
-
-
-
-##### ***Service Objects***
-
-
-
-***Object	    Purpose***
-
-***----------------------------------------***
-
-***ZESR\_SD	    Service Definition***
-
-***ZESR\_SB	    OData V4 UI Service Binding***
-
-
-
-#### ***ABAP Class***
-
-
-
-***ZCL\_ESR\_REQUEST***
-
-
-
-***This class contains the request-related business logic, including duplicate request validation.***
-
-
-
-##### ***Main Programs***
-
-
-
-* ***ZESR\_CREATE\_REQUEST***
-* ***ZESR\_STATUS\_UPDATE***
-* ***ZESR\_ALV\_REQUEST***
-* ***ZESR\_ALV\_MONITOR***
-* ***ZESR\_STATUS\_HISTORY***
-* ***ZESR\_REQUEST\_DASHBOARD***
-
-
-
-***I also created separate test programs while developing and testing the different parts of the application.***
-
-
-
-### ***How the Project Works***
-
-
-
-##### ***The overall flow of the project is:***
-
-
-
-***Employee Request***
-
-&#x20;      ***↓***
-
-***Request Validation***
-
-&#x20;      ***↓***
-
-***Duplicate Check***
-
-&#x20;      ***↓***
-
-***Request Created***
-
-&#x20;      ***↓***
-
-***Status History***
-
-&#x20;      ***↓***
-
-***CDS Views***
-
-&#x20;      ***↓***
-
-***OData V4 Service***
-
-&#x20;      ***↓***
-
-***Fiori Elements***
-
-
-
-***The backend data is maintained in SAP tables, while CDS views provide the data needed by the service layer and Fiori interface.***
-
-
-
-### ***Fiori Elements Interface***
-
-
-
-##### ***I created an OData V4 UI service using:***
-
-
-
-***Service Definition : ZESR\_SD***
-
-***Service Binding    : ZESR\_SB***
-
-***Binding Type        : OData V4 - UI***
-
-
-
-#### ***The Fiori Elements preview provides two important views:***
-
-
-
-###### ***Request Overview***
-
-
-
-***This displays the available requests along with details such as:***
-
-
-
-* ***Request ID***
-* ***Employee***
-* ***Request type***
-* ***Priority***
-* ***Status***
-* ***Material***
-* ***Quantity***
-* ***Reason***
-* ***Request date***
-* ***Required date***
-
-
-
-##### ***Status History***
-
-
-
-***This displays the history of status changes for requests.***
-
-
-
-***It includes information such as:***
-
-
-
-* ***Request ID***
-* ***Status***
-* ***Status date***
-* ***Status sequence***
-* ***Status text***
-* ***Changed by***
-* ***Comments***
-
-
-
-### ***Project Structure***
-
-
-
-***Employee-Service-Request-Management***
-
-***│***
-
-***├── abap***
-
-***│   ├── classes***
-
-***│   ├── cds***
-
-***│   ├── programs***
-
-***│   └── services***
-
-***│***
-
-***├── database***
-
-***│***
-
-***├── docs***
-
-***│***
-
-***├── screenshots***
-
-***│***
-
-***└── test***
-
-
-
-***The abap folder contains the main ABAP, CDS and service-related source files.***
-
-
-
-***The database folder contains documentation related to the database tables.***
-
-
-
-***The test folder contains the programs that I used to test different parts of the application.***
-
-
-
-***The screenshots folder contains screenshots of the working SAP development environment and Fiori Elements application.***
-
-
-
-### ***Screenshots***
-
-
-
-***The repository contains screenshots showing:***
-
-
-
-* ***SAP ADT project structure***
-* ***ABAP programs and objects***
-* ***Fiori request overview***
-* ***Fiori status history***
-* ***Request creation output***
-* ***Duplicate request validation***
-
-
-
-***These screenshots show the project working in the SAP environment.***
 
 
 
@@ -434,54 +1413,126 @@
 * ***OData V4***
 * ***Fiori Elements***
 * ***SAP Database***
+* ***ALV***
 * ***Git***
 * ***GitHub***
 
 
 
-##### ***What I Learned From This Project***
+
+
+#### ***What I Learned***
 
 
 
-***While developing this project, I worked with different parts of SAP ABAP development instead of focusing only on reports.***
+***While developing this project, I worked with different layers of SAP ABAP development instead of focusing only on individual reports.***
 
 
 
-***Some of the main things I practiced were:***
+***The main areas I practiced were:***
 
 
 
-* ***Creating and using ABAP Dictionary objects***
-* ***Working with database tables***
-* ***Writing ABAP programs***
-* ***Creating reusable business logic using an ABAP class***
-* ***Performing validations and database operations***
-* ***Maintaining status history***
-* ***Creating CDS views***
-* ***Exposing CDS data through OData V4***
-* ***Creating a Fiori Elements service binding***
-* ***Testing the application using real request data***
-* ***Using Git and GitHub to maintain the project***
+* ***ABAP programming***
+* ***ABAP Dictionary development***
+* ***Custom domains and data elements***
+* ***Database table creation***
+* ***Database operations using Open SQL***
+* ***Input validation***
+* ***Duplicate request validation***
+* ***Reusable ABAP class design***
+* ***Status management***
+* ***Status history tracking***
+* ***ALV reporting***
+* ***CDS View development***
+* ***OData V4 service exposure***
+* ***Fiori Elements integration***
+* ***Testing and debugging***
+* ***Git version control***
+* ***GitHub repository management***
 
 
 
-***This project helped me understand how the different layers of an SAP application connect with each other.***
+***The project helped me understand how backend ABAP development connects with CDS, OData and Fiori Elements to form an end-to-end SAP application.***
 
 
 
-#### ***Project Status***
+#### 
+
+#### ***Why This Project***
+
+###### 
+
+***I wanted to build a project that demonstrates more than basic ABAP reporting.***
 
 
 
-***The core backend functionality, request validation, status tracking, CDS views, OData service, and Fiori Elements preview have been implemented and tested.***
+***The project combines:***
 
 
 
-***The project is being maintained as a learning and portfolio project to demonstrate my practical SAP ABAP development experience.***
+***ABAP***
+
+&#x20; ***+***
+
+***ABAP Dictionary***
+
+&#x20; ***+***
+
+***Database Operations***
+
+&#x20; ***+***
+
+***Business Logic***
+
+&#x20; ***+***
+
+***CDS***
+
+&#x20; ***+***
+
+***OData V4***
+
+&#x20; ***+***
+
+***Fiori Elements***
 
 
 
-### ***Author***
+***This allowed me to practice both backend development and the service/UI integration side of SAP.***
+
+
+
+
+
+#### ***Future Enhancements***
+
+
+
+***Possible future improvements include:***
+
+
+
+* ***Fiori-based request creation form***
+* ***Role-based access control***
+* ***Employee-specific request filtering***
+* ***Approval workflow***
+* ***Email or SAP notifications***
+* ***Improved fulfillment management***
+* ***Fiori dashboard with analytical cards***
+* ***Request priority-based monitoring***
+* ***Administrative monitoring features***
+* ***Enhanced error handling and user messages***
+
+
+
+***These are planned enhancements and are not represented as completed features in the current version.***
+
+
+
+
+
+#### ***Author***
 
 
 
@@ -489,9 +1540,48 @@
 
 
 
-***B.Tech — Artificial Intelligence \& Machine Learning***
+***B.Tech - Artificial Intelligence \& Machine Learning***
 
 
 
 ***SAP ABAP Project***
+
+
+
+
+
+#### ***Project Type***
+
+
+
+###### ***Academic / Learning / Portfolio Project***
+
+
+
+***This project was developed to gain practical experience in SAP ABAP development and understand how ABAP backend logic can be integrated with CDS, OData V4 and Fiori Elements.***
+
+
+
+
+
+#### ***Repository Contents***
+
+
+
+***The repository contains:***
+
+
+
+* ***ABAP source programs***
+* ***ABAP business logic class***
+* ***CDS definitions***
+* ***Service definition***
+* ***Database documentation***
+* ***Test programs***
+* ***Screenshots***
+* ***Project documentation***
+
+
+
+***The repository is intended to demonstrate the development approach, application architecture and practical SAP ABAP skills used during the project.***
 
