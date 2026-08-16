@@ -1,0 +1,23 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'ESR Request Status History'
+
+define view entity ZESR_C_STATUS
+as select from zesr_status
+{
+key request_id  as RequestId,
+key status_seq  as StatusSequence,
+
+  status      as Status,
+  status_date as StatusDate,
+  changed_by  as ChangedBy,
+  comments    as Comments,
+
+  case status
+    when 'S' then 'Submitted'
+    when 'V' then 'Validated'
+    when 'P' then 'Processing'
+    when 'F' then 'Fulfilled'
+    else 'Unknown'
+  end as StatusText
+
+}

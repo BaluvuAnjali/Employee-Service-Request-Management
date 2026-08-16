@@ -1,0 +1,35 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'ESR Request Management'
+
+@Metadata.allowExtensions: true
+
+define root view entity ZESR_C_REQUEST
+  as select from zesr_hdr as Header
+
+    inner join zesr_item as Item
+      on Header.request_id = Item.request_id
+
+{
+  key Header.request_id       as RequestId,
+
+      Header.employee_id      as EmployeeId,
+      Header.request_type     as RequestType,
+      Header.priority         as Priority,
+      Header.status           as Status,
+
+      case Header.status
+        when 'S' then 'Submitted'
+        when 'V' then 'Validated'
+        when 'P' then 'Processing'
+        when 'F' then 'Fulfilled'
+        else 'Unknown'
+      end                     as StatusText,
+
+      Item.material_id        as MaterialId,
+      Item.quantity           as Quantity,
+      Item.reason             as Reason,
+
+      Header.request_date     as RequestDate,
+      Header.required_date    as RequiredDate
+
+}

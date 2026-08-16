@@ -1,0 +1,5 @@
+@EndUserText.label: 'ESR Request Management Service'
+define service ZESR_SD {
+  expose ZESR_C_REQUEST as Requests;
+  expose ZESR_C_STATUS  as StatusHistory;
+}
